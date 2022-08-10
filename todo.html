@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {margin:0; padding:0;}
+        .container {
+            width:400px;
+            margin:0 auto;
+        }
+        .todo-box {
+            display: grid;
+            grid-auto-rows:120px;
+            grid-gap:10px;
+            padding: 5px;
+            height: 500px;
+            overflow-y: auto;
+        }
+        .todo-item {
+            border:1px solid #ddd;
+            border-radius: 5px;
+            padding:8px 12px;
+        }
+        .todo-item.complete {
+            background-color: rgb(40, 54, 233);
+        }
+        .todo-item.complete > * {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="todo-box">
+            <div class="todo-item">
+                <h4 class="title">
+                    <input type="checkbox">
+                    타이틀 더미</h4>
+                <span class="date">2022-08-08</span>
+                <p>세부내용 더미</p>
+            </div>
+            <div class="todo-item complete">
+                <h4 class="title">
+                    <input type="checkbox">
+                    타이틀 더미</h4>
+                <span class="date">2022-08-08</span>
+                <p>세부내용 더미</p>
+            </div>
+        </div>
+        <div class="button-box">
+            <input type="text" id="titleInput">
+            <input type="date" id="dateInput">
+            <textarea id="contentInput" rows="3"></textarea>
+            <button id="enter">입력</button>
+        </div>
+    </div>
+
+    <script>
+        let todoList = [
+            {id:1, title:"제목입니다1", date:'2022-08-08', content:"세부내용입니다1", complete:false},
+            {id:2, title:"제목입니다2", date:'2022-08-09', content:"세부내용입니다2", complete:false},
+            {id:3, title:"제목입니다3", date:'2022-08-10', content:"세부내용입니다3", complete:false}
+        ]; //내부적으론 자바의 ArrayList
+        let nowId = 3;
+        //비어있는 배열을 하나 만들어서 todoList에 할당
+
+        const todoBox = document.querySelector(".todo-box");
+        const enterButton = document.querySelector("#enter");
+        const titleInput = document.querySelector("#titleInput");
+        const dateInput = document.querySelector("#dateInput");
+        const contentInput = document.querySelector("#contentInput");
+
+        todoBox.addEventListener("click", function(e) {
+            if (e.target.classList.contains("check")) 
+            {
+                let id = e.target.dataset.id;
+                for (let i=0; i<todoList.length; i++) {
+                    if (todoList[i].id == id) {
+                        todoList[i].complete = !todoList[i].complete;
+                        let checkItem = todoList.splice(i, 1)[0];
+                        todoList.push(checkItem);
+                        RenderItem();
+                        save();
+                        return;
+                    }
+                }
+            }
+        })
+
+        enterButton.addEventListener("click", function() {
+            const title = titleInput.value;
+            const date = dateInput.value;
+            const content = contentInput.value;
+            if (title=="") {
+                alert("타이틀이 비어있습니다.");
+                titleInput.focus();
+                return;
+            }
+            if (date == "" || content=="") {
+                alert("필수값이 비어있습니다");
+                return;
+            }
+            let obj = {id:nowId, title, date, content, complete:false};
+            nowId++;
+            todoList.push(obj);
+            RenderItem();
+            save();
+
+            titleInput.value = "";
+            dateInput.value = "";
+            contentInput.value = "";
+        });
+
+        function save() {
+            let json = JSON.stringify(todoList);
+            localStorage.setItem("data", json);
+        }
+
+        function load() {
+            let json = localStorage.getItem("data");
+            if (json != null) {
+                todoList = JSON.parse(json);
+            }
+        }
+
+        load();
+        RenderItem();
+        function RenderItem()
+        {
+            todoBox.innerHTML = "";
+
+            let completeList = todoList.filter(function(x) {
+                return x.complete == true;
+            });
+            let unCompleteList = todoList.filter(function(x) {
+                return x.complete == false;
+            });
+
+            todoList = [...unCompleteList, ...completeList];
+
+            for(let i = 0; i < todoList.length; i++)
+            {
+                const item = document.createElement("div"); //div 태그가 만들어져요
+                const data = todoList[i];
+                item.innerHTML = 
+                `<div class="todo-item ${data.complete ? "complete" : ""}">
+                    <h4 class="title">
+                        <input data-id="${data.id}" class="check" 
+                        type="checkbox" ${data.complete? "checked" : ""}>
+                        ${data.title}
+                    </h4>
+                    <span class="date">${data.date}</span>
+                    <p>${data.content}</p>
+                </div>`;
+                
+                todoBox.appendChild(item.firstElementChild);
+            }
+        }
+    </script>
+</body>
+</html>
