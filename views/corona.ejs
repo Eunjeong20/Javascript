@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코로나 현황</title>
+    <style>
+        * {margin:0; padding:0;}
+        .container {
+            margin:20px auto;
+            width:600px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap:10px;
+        }
+        .item {
+            display: flex;
+            flex-direction: column;
+            height:100px;
+            border:1px solid #ddd;
+            border-radius: 5px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .item > h2 {
+            font-size:18px;
+        }
+        .item > h4 {
+            font-size:15px;
+        }
+        .item:nth-child(1) {
+             background-color: #80558C;
+             color:#fff;
+        }
+        .item > .bar {
+            position: absolute;
+            height: 15px; width:100%;
+            bottom:0;
+            left:0;
+            background-color: rgb(55, 235, 145);
+            transform: scaleX(0);
+            transform-origin: bottom left;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotateZ(0);
+            }
+            100% {
+                transform: rotateZ(300deg)
+            }
+        }
+        #spinner {
+            width: 50px;
+            height: 50px;
+            background-color: #f00;
+            animation: spin 0.8s linear 3 ;
+        }
+    </style>
+</head>
+<body>
+    <div id="spinner">
+
+    </div>
+    <div class="container">
+        <% for(let i=0; i < data.length; i++)  { %>
+            <div class="item">
+                <h2><%=data[i].title %></h2>
+                <h4 data-id="<%=data[i].id %>"><%=data[i].count %></h4>
+                <div class="bar"></div>
+            </div>
+        <% } %>
+    </div>
+    <button id="refresh">Refresh</button>
+    <script>
+        const btn = document.querySelector("#refresh");
+        let isLoading = false;
+        btn.addEventListener("click", e => {
+            if(isLoading == true) return;
+            isLoading = true;
+            let ajax = new XMLHttpRequest();
+            ajax.addEventListener("readystatechange", ()=>{
+                if(ajax.readyState == XMLHttpRequest.DONE) {
+                    if(ajax.status == 200) {
+                        let returnData = JSON.parse(ajax.responseText);
+                        UpdateInfo(returnData);
+                    }
+                    isLoading = false;
+                }
+            });
+            ajax.open("GET", "/data");
+            ajax.send();
+        });
+
+        function UpdateInfo(data) {
+            for (let i = 0; i < data.length; i++) {
+                let target = document.querySelector(`h4[data-id="${data[i].id}"]`);
+                let value = data[i].count;
+                Animate(target,  value, 1000);           
+            }
+        }
+
+        function Animate(target, value, time) {
+            let step = value / 60;
+            let nowValue = 0;
+            let bar = target.nextElementSibling;
+            let id = setInterval(()=>{
+                nowValue += step;
+                if(nowValue >= value) {
+                    target.innerHTML = value;
+                    clearInterval(id);
+                } else {
+                    target.innerHTML = Math.round(nowValue);
+                    let ratio = nowValue / 1000;
+                    bar.style.transform = `scalex(${ratio})`;
+                }
+                
+            }, time/60);
+            
+        }
+    </script>
+</body>
+</html>
