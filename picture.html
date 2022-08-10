@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #myCanvas {
+            border:1px solid #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-box">
+        <input type="range" min="1" max="10" id="lineWidth" value="1">
+        <label for="lineWidth">1</label>
+        <input type="color" id="lineColor">
+        <div class="mode-box">
+            <input type="radio" value="draw" name="mode" checked>그리기
+            <input type="radio" value="draw" name="mode" > 지우기
+        </div>
+    </div>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.querySelector("#myCanvas");
+        const ctx = canvas.getContext("2d");
+        const lineWidth = document.querySelector("#lineWidth");
+        const lineColor = document.querySelector("#lineColor");
+        let brushSize = 5;
+
+        lineWidth.addEventListener("change", e=>{
+            ctx.lineWidth = lineWidth.value;
+            lineWidth.nextElementSibling.innerHTML = lineWidth.value;
+            // 지우개의 크기도 변경할 수 있도록 여기에서 브러쉬의 크기를 설정
+            brushSize = lineWidth * 5; 
+        });
+
+        let mode = "draw";
+        document.querySelector("mode-box").addEventListener("click", e=>{
+            if (e.target.value != undefined) {  // 텍스트를 정확하게 클릭하지 못했을 때
+                mode = e.target.value;
+            }
+        });
+
+        lineColor.addEventListener("change", e => {
+            ctx.strokeStyle = lineColor.value;
+        });
+        ctx.lineCap = "round";
+
+        let before = {x:0, y:0};
+        let isDown = false;
+
+        canvas.addEventListener("mousedown", (e)=> {
+            let {offsetX:x, offsetY:y} = e;
+            before = {x, y};
+            isDown = true;
+            console.log(before);
+        });
+
+        canvas.addEventListener("mousemove", e=> {
+            if (isDown == false) return;
+            let {offsetX:x, offsetY:y} = e;
+            if (mode == "draw") {
+                ctx.beginPath();
+                ctx.moveTo(before.x, before.y);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                before = {x, y};
+            } else if (mode ==  "erase") {
+                // 마우스 커서의 꼭지점이 브러쉬 영역의 중간으로 가도록 설정
+                ctx.clearRect(brushSize/2, brushSize/2, brushSize, brushSize);
+            }
+            
+        });
+
+        canvas.addEventListener("mouseup", (e)=> {
+            isDown = false;         
+        });
+    </script>
+</body>
+</html>
