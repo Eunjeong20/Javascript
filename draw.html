@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #myCanvas 
+        {
+            border:1px solid #555;
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <script>
+        const canvas = document.querySelector("#myCanvas");
+        const ctx = canvas.getContext("2d");
+        let x = 30, y = 30;
+        let keyArr = [];
+        document.addEventListener("keydown", e => {
+            keyArr[e.keyCode] = true;
+        });
+        document.addEventListener("keyup", e => {
+            keyArr[e.keyCode] = false;
+        });
+        
+        setInterval(()=>{
+            ctx.clearRect(0, 0, 600, 400);
+            if(keyArr[37] == true) x -= 5;
+            if(keyArr[38] == true) y -= 5;
+            if(keyArr[39] == true) x += 5;
+            if(keyArr[40] == true) y += 5;
+            ctx.fillStyle = "rgb(255, 0, 0)";
+            ctx.fillRect(x, y, 25, 25); // x좌, y좌, 너비, 높이
+
+            ctx.beginPath();
+            ctx.moveTo(100, 100);
+            ctx.lineTo(200, 100);
+            ctx.stroke();
+            
+        }, 1000/60);        
+
+    </script>
+</body>
+</html>
