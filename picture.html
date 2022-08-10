@@ -35,10 +35,11 @@
             // 지우개의 크기도 변경할 수 있도록 여기에서 브러쉬의 크기를 설정
             brushSize = lineWidth * 5; 
         });
-
+        
         let mode = "draw";
-        document.querySelector("mode-box").addEventListener("click", e=>{
-            if (e.target.value != undefined) {  // 텍스트를 정확하게 클릭하지 못했을 때
+        document.querySelector(".mode-box").addEventListener("click", e => {
+            if(e.target.value != undefined)
+            {
                 mode = e.target.value;
             }
         });
