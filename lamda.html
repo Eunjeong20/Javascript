@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 람다 (lamda)
+        // 1. function을 지우고 argument 뒤에 => 를 넣는다.
+        // 2. 함수가 한줄일 경우 본문의 중괄호를 생략할 수 있고,
+        //      이 때, return도 생략 가능하다.
+        // 3. 파라메터가 한 개일 경우에는 
+        //    파라메터를 감싸는 소괄호도 생략 가능하다.
+        // 파생된 고급개념 클로져, 바인딩
+
+        
+        let users=[
+            {id:11,name:'Adam',age:23,group:'editor'},
+            {id:47,name:'John',age:28,group:'admin'},
+            {id:85,name:'William',age:34,group:'editor'},
+            {id:97,name:'Oliver',age:28,group:'admin'}
+        ];
+        
+        let groupByAges =users.reduce( (result, user) => {
+            let cnt = (result[user.age] || 0) + 1;
+            result[user.age] = cnt;
+            return result;
+        }, {} );
+        console.log(groupByAges);
+
+
+    </script>
+</body>
+</html>
