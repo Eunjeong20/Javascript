@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #title {  
+            transition: all 0.5s;
+        }
+        .on {
+            color:rgb(255, 255, 255);
+            background-color: rgb(10, 52, 238);
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title" class="on">Hello World</h1>
+    <!-- <button onclick=ToggleOn()>토글 클릭</button> -->
+    <script>
+        // "use strict"
+        // let log = console.log;
+        // let a = 10;
+        // let b = "Hello World";
+        // let c = true;
+        // let d;
+        // log(a);
+        // a = "안녕하세요";
+        // log(a);
+        // a = true;
+        // log(a);
+        // log(typeof d, typeof e);
+        // e = "aa";
+
+        // const a = 10; // const는 상수. 한번 정의하면 변경불가 java의 final과 같다.
+        // console.log(a);
+        // Document Object Model => DOM
+        // React의 버추얼 DOM에 대해서 설명해봐라
+
+        const title = document.querySelector("#title");
+        console.log(title);
+        title.innerHTML = "Hello KMH!";
+
+        // 익명함수
+        title.addEventListener("click", function () {
+            let toggle = title.classList.contains("on");
+            if (toggle) {
+                title.classList.remove("on");
+                title.style.opacity = 0.5;
+            } else {
+                title.classList.add("on"); 
+                title.style.opacity = 1;
+            }
+            toggle = !toggle;
+        });
+    </script>
+</body>
+</html>
