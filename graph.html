@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #myCanvas {
+            border:1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="data-box">
+        <input type="number" min="0" max="100" id="p" value="50"> 
+        <input type="color" id="c">
+        <button id="drawBtn">그리기</button>
+    </div>
+    <canvas id="myCanvas" width="250" height="300"></canvas>
+    <script>
+        const canvas = document.querySelector("#myCanvas");
+        const ctx = canvas.getContext("2d");
+            // 90도 파이 그림
+            // ctx.beginPath();
+            // ctx.moveTo(125, 125);
+            // ctx.arc(125, 125, 100, 0, Math.PI / 2, false);  // arc는 호를 그리는 기능
+            // ctx.closePath();
+            // ctx.stroke();
+
+        let target = 0;
+        document.querySelector("#drawBtn").addEventListener("click", e=> {
+            target = document.querySelector("#p").value *1;
+            color = document.querySelector("#c").value;
+
+            let step = target/60;
+            let nowP = 0;
+            let id = setInterval(() => {
+                nowP += step;
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                if (nowP >= target) {
+                    DrawCircle(target.toFixed(1), color);
+                    clearInterval(id);
+                } else {
+                    DrawCircle(nowP.toFixed(1), color);
+                }
+                
+            }, 1000/60);
+        });
+        
+
+        function DrawCircle(percent, color="#3AE2EF") {
+            ctx.beginPath();
+            ctx.moveTo(125, 125);
+            // Math.PI = 180
+            ctx.arc(125, 125, 110, 0, Math.PI * 2, false);  // arc는 호를 그리는 기능
+            ctx.fillStyle = "#999";
+            ctx.fill();
+
+            let targetAngle = Math.PI * 2 * (percent/100);
+            ctx.beginPath();
+            ctx.moveTo(125, 125);
+            ctx.arc(125, 125, 110, 0-Math.PI/2, targetAngle-Math.PI/2, false);  // arc는 호를 그리는 기능
+            // ctx.arc(125, 125, 110, -Math.PI/2, targetAngle - Math.PI/2, false);  // arc는 호를 그리는 기능
+            ctx.fillStyle = color;
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(125, 125);
+            ctx.arc(125, 125, 80, 0, Math.PI * 2, false);  // arc는 호를 그리는 기능
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+
+            ctx.font = "40px Arial"
+            ctx.textAlign = "center"
+            ctx.textBaseline = "middle"
+            ctx.fillStyle = "#000";
+            ctx.fillText(`${percent}%`, 125, 125);
+        }
+    </script>
+</body>
+</html>
