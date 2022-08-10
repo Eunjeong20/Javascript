@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #popup {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgb(0,0,0,0.3);
+            visibility: hidden;
+        }
+        #popup.on {
+            visibility: visible;
+        }
+        #popup > .inner {
+            background-color: #fff;
+            top:-350px;
+            left:50%;
+            transform: translate(-50%, -50%);
+            background-color:#fff;
+            border-radius: 5px;
+            width: 400px;
+            height: 300px;
+            display: grid;
+            grid-template-rows: 1fr 60px;
+            transition:all 0.5s;
+        }
+        #popup.on > .inner {
+            top:50%;
+        }
+        #popup > .inner > .button-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #popup > .inner > .content {
+            padding:15px 25px;
+        }
+    </style>
+</head>
+<body>
+    <div id="popup">
+        <div class="inner">
+            <div class="content">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore assumenda illo qui, libero, voluptas neque quibusdam mollitia saepe nostrum delectus accusamus iste quis eius incidunt nulla, molestias accusantium cupiditate voluptatibus.
+            </div>
+            <div class="button-row">
+                <button id="close">닫기</button>
+            </div>
+        </div>
+    </div>
+    <button id="open">오픈팝업</button>
+    <script>
+        const open = document.querySelector("#open");
+        const popup = document.querySelector("#popup");
+        const close = document.querySelector("#close");
+        const content = document.querySelector(".content");
+        open.addEventListener("click", function() {
+            content.innerHTML = "<h1>Hello KM HighSchool!";
+            popup.classList.add("on");
+        });
+        close.addEventListener("click", function() {
+            popup.classList.remove("on");
+        });
+    </script>
+</body>
+</html>
