@@ -16,9 +16,10 @@
         <input type="range" min="1" max="10" id="lineWidth" value="1">
         <label for="lineWidth">1</label>
         <input type="color" id="lineColor">
+        <button id="down">다운로드</button>
         <div class="mode-box">
             <input type="radio" value="draw" name="mode" checked>그리기
-            <input type="radio" value="draw" name="mode" > 지우기
+            <input type="radio" value="erase" name="mode" > 지우기
         </div>
     </div>
     <canvas id="myCanvas" width="600" height="400"></canvas>
@@ -27,15 +28,29 @@
         const ctx = canvas.getContext("2d");
         const lineWidth = document.querySelector("#lineWidth");
         const lineColor = document.querySelector("#lineColor");
+
+        const vCanvas = document.createElement("canvas");
+        vCanvas.width = canvas.width;
+        vCanvas.height = canvas.height;
+        const vtx = vCanvas.getContext("2d");
+
+
+        document.querySelector("#down").addEventListener("click", e => {
+            let base64 = vCanvas.toDataURL();
+            let aTag = document.createElement("a");
+            aTag.href = base64;
+            aTag.download = "result.png";
+            aTag.click();
+        }); 
         let brushSize = 5;
 
         lineWidth.addEventListener("change", e=>{
             ctx.lineWidth = lineWidth.value;
             lineWidth.nextElementSibling.innerHTML = lineWidth.value;
             // 지우개의 크기도 변경할 수 있도록 여기에서 브러쉬의 크기를 설정
-            brushSize = lineWidth * 5; 
+            brushSize = lineWidth.value * 5; 
         });
-        
+
         let mode = "draw";
         document.querySelector(".mode-box").addEventListener("click", e => {
             if(e.target.value != undefined)
@@ -70,7 +85,7 @@
                 before = {x, y};
             } else if (mode ==  "erase") {
                 // 마우스 커서의 꼭지점이 브러쉬 영역의 중간으로 가도록 설정
-                ctx.clearRect(brushSize/2, brushSize/2, brushSize, brushSize);
+                ctx.clearRect(x-brushSize/2, y-brushSize/2, brushSize, brushSize);
             }
             
         });
